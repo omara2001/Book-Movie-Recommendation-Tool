@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book & Movie Recommendation Engine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-magic"></i> Book & Movie Recommendations</h1>
+            <p>Discover your next favorite book or movie with AI-powered personalized recommendations</p>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <button type="button" class="tab-btn active" data-tab="personalized">
+                    <i class="fas fa-user-circle"></i> Personalized
+                </button>
+                <button type="button" class="tab-btn" data-tab="quick">
+                    <i class="fas fa-bolt"></i> Quick Search
+                </button>
+                <button type="button" class="tab-btn" data-tab="discover">
+                    <i class="fas fa-compass"></i> Discover
+                </button>
+                <button type="button" class="tab-btn" data-tab="trending">
+                    <i class="fas fa-fire"></i> Trending
+                </button>
+            </div>
+
+            <!-- Personalized Tab -->
+            <div id="personalized-tab" class="tab-content active">
+                <div class="form-section">
+                    <div class="media-select">
+                        <button type="button" class="media-btn active" data-media="books">
+                            <i class="fas fa-book"></i>
+                            Books
+                        </button>
+                        <button type="button" class="media-btn" data-media="movies">
+                            <i class="fas fa-film"></i>
+                            Movies
+                        </button>
+                        <button type="button" class="media-btn" data-media="both">
+                            <i class="fas fa-layer-group"></i>
+                            Both
+                        </button>
+                    </div>
+
+                    <div class="preferences-grid">
+                        <div class="preference-section">
+                            <h3><i class="fas fa-theater-masks"></i> Genres</h3>
+                            <div class="chip-container" id="genreChips">
+                                <!-- Genres will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="preference-section">
+                            <h3><i class="fas fa-heart"></i> Current Mood</h3>
+                            <div class="chip-container" id="moodChips">
+                                <!-- Moods will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="preference-section">
+                            <h3><i class="fas fa-lightbulb"></i> Themes</h3>
+                            <div class="chip-container" id="themeChips">
+                                <!-- Themes will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="favorites">Your Favorite Books/Movies (comma-separated)</label>
+                        <input type="text" id="favorites" placeholder="e.g., Harry Potter, The Matrix, Pride and Prejudice">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="recommendationCount">Number of Recommendations</label>
+                        <select id="recommendationCount" class="recommendation-select">
+                            <option value="3">3</option>
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="search-btn" onclick="getPersonalizedRecommendations()">
+                        <i class="fas fa-search"></i> Get Recommendations
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Search Tab -->
+            <div id="quick-tab" class="tab-content">
+                <div class="form-section">
+                    <h2 class="section-title">Quick Recommendation Search</h2>
+
+                    <div class="media-select">
+                        <button type="button" class="media-btn active" data-media="books" id="quickMediaBooks">
+                            <i class="fas fa-book"></i>
+                            Books
+                        </button>
+                        <button type="button" class="media-btn" data-media="movies" id="quickMediaMovies">
+                            <i class="fas fa-film"></i>
+                            Movies
+                        </button>
+                    </div>
+
+                    <div class="quick-search">
+                        <input type="text" id="quickQuery" placeholder="e.g., 'books like Harry Potter' or 'sci-fi movies'">
+                        <button type="button" class="search-btn" onclick="quickSearch()">
+                            <i class="fas fa-bolt"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discover Tab -->
+            <div id="discover-tab" class="tab-content">
+                <div class="form-section">
+                    <h2 class="section-title">Discover Something New</h2>
+
+                    <div class="media-select">
+                        <button type="button" class="media-btn active" data-media="books" id="discoverMediaBooks">
+                            <i class="fas fa-book"></i>
+                            Books
+                        </button>
+                        <button type="button" class="media-btn" data-media="movies" id="discoverMediaMovies">
+                            <i class="fas fa-film"></i>
+                            Movies
+                        </button>
+                        <button type="button" class="media-btn" data-media="both" id="discoverMediaBoth">
+                            <i class="fas fa-layer-group"></i>
+                            Both
+                        </button>
+                    </div>
+
+                    <h3 class="mood-title">Select Your Mood</h3>
+                    <div class="mood-selector" id="moodSelector">
+                        <div class="mood-card" data-mood="adventurous">
+                            <i class="fas fa-mountain"></i>
+                            <p>Adventurous</p>
+                        </div>
+                        <div class="mood-card" data-mood="relaxed">
+                            <i class="fas fa-spa"></i>
+                            <p>Relaxed</p>
+                        </div>
+                        <div class="mood-card" data-mood="thoughtful">
+                            <i class="fas fa-brain"></i>
+                            <p>Thoughtful</p>
+                        </div>
+                        <div class="mood-card" data-mood="romantic">
+                            <i class="fas fa-heart"></i>
+                            <p>Romantic</p>
+                        </div>
+                        <div class="mood-card" data-mood="nostalgic">
+                            <i class="fas fa-history"></i>
+                            <p>Nostalgic</p>
+                        </div>
+                        <div class="mood-card" data-mood="inspired">
+                            <i class="fas fa-lightbulb"></i>
+                            <p>Inspired</p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="search-btn" onclick="discoverMedia()">
+                        <i class="fas fa-compass"></i> Discover
+                    </button>
+                </div>
+            </div>
+
+            <!-- Trending Tab -->
+            <div id="trending-tab" class="tab-content">
+                <div class="form-section">
+                    <h2 class="section-title">What's Trending</h2>
+
+                    <div class="media-select">
+                        <button type="button" class="media-btn active" data-media="books" id="trendingMediaBooks">
+                            <i class="fas fa-book"></i>
+                            Books
+                        </button>
+                        <button type="button" class="media-btn" data-media="movies" id="trendingMediaMovies">
+                            <i class="fas fa-film"></i>
+                            Movies
+                        </button>
+                        <button type="button" class="media-btn" data-media="both" id="trendingMediaBoth">
+                            <i class="fas fa-layer-group"></i>
+                            Both
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="trendingCategory">Category (Optional)</label>
+                        <input type="text" id="trendingCategory" placeholder="e.g., Fantasy, Thriller, Romance">
+                    </div>
+
+                    <button type="button" class="search-btn" onclick="getTrending()">
+                        <i class="fas fa-fire"></i> Show Trending
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Finding perfect recommendations for you...</p>
+            </div>
+
+            <!-- Error message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Results section -->
+            <div class="results-section" id="resultsSection">
+                <div class="results-header">
+                    <h2>Your Recommendations</h2>
+                    <p class="personalized-message" id="personalizedMessage"></p>
+                </div>
+                <div class="recommendations-grid" id="recommendationsGrid">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
